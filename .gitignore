@@ -1,5 +1,16 @@
-# Ignored files
+### Ignored files
+
+# Virtual environment
 venv
+python-wsgi-venv
+
+# Temporary files
 *.pyc
 *.swo
 *.swp
+
+# Nginx files
+nginx-info/
+
+# Static public files
+public
