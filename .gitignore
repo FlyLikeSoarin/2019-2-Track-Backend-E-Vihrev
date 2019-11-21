@@ -1,4 +1,4 @@
-### Ignored files
+# -- Ignored files -- #
 
 # Virtual environment
 venv
@@ -14,3 +14,6 @@ nginx-info/
 
 # Static public files
 public
+
+# Database location
+database

@@ -4,4 +4,4 @@ def index(request):
     if request.method == "GET":
         return render(request, 'index.html')
     else:
-        return HttpResponseForbidden()
+        return HttpResponseNotAllowed()

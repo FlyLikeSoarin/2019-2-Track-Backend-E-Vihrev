@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponse
+from django.http import HttpResponseNotAllowed
 
 def get_chat_messages():
     if request.method == 'GET':
@@ -8,11 +9,11 @@ def get_chat_messages():
         data = { 'messages': [] }
         return JsonResponse(data, safe=False)
     else:
-        return HttpResponseForbidden()
+        return HttpResponseNotAllowed()
 
 def send_message():
     if request.method == 'POST':
         # sending logic
         return HttpResponse(status=200)
     else:
-        return HttpResponseForbidden()
+        return HttpResponseNotAllowed()
