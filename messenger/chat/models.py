@@ -4,6 +4,7 @@ from user.models import User
 
 class Chat(models.Model):
     creator = models.ForeignKey(User, models.CASCADE)
+    is_group_chat = models.BooleanField()
     chat_label = models.CharField(max_length=128, null=True)
     icon = models.CharField(max_length=100, null=True)
 
