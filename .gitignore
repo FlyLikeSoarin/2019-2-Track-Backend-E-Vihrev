@@ -14,5 +14,7 @@ nginx-info/
 # Static public files
 public
 
-# Database location
+# Database
 database
+.db-backup
+.db-pid
