@@ -1,8 +1,7 @@
 # -- Ignored files -- #
 
 # Virtual environment
-venv
-python-wsgi-venv
+TrackMessengerDjangoEnv
 
 # Temporary files
 *.pyc

@@ -1,28 +1,27 @@
 from django.db import models
-from user.models import User
 from django.db.models import Q
 
-
-class Dialog(models.Model):
-    first_user = models.ForeignKey(User, models.CASCADE, related_name='first_user_in_dialog')
-    second_user = models.ForeignKey(User, models.CASCADE, related_name='second_user_in_dialog')
-
-    def create_dialog(first_user, second_user):
-        already_exist = Dialog.objects.filter(
-            (Q(first_user=first_user) & Q(second_user=second_user))
-            | (Q(first_user=second_user) & Q(second_user=first_user))
-        ).exists()
-        if (already_exist):
-            pass
-        else:
-            Dialog.objects.create(first_user=User.get_by_id(first_user), second_user=User.get_by_id(second_user))
-
-    def get_dialogs(id):
-        return Dialog.objects.filter(Q(first_user=id) | Q(second_user=id)).all()
+#
+# class Dialog(models.Model):
+#     first_user = models.ForeignKey(User, models.CASCADE, related_name='first_user_in_dialog')
+#     second_user = models.ForeignKey(User, models.CASCADE, related_name='second_user_in_dialog')
+#
+#     def create_dialog(first_user, second_user):
+#         already_exist = Dialog.objects.filter(
+#             (Q(first_user=first_user) & Q(second_user=second_user))
+#             | (Q(first_user=second_user) & Q(second_user=first_user))
+#         ).exists()
+#         if (already_exist):
+#             pass
+#         else:
+#             Dialog.objects.create(first_user=User.get_by_id(first_user), second_user=User.get_by_id(second_user))
+#
+#     def get_dialogs(id):
+#         return Dialog.objects.filter(Q(first_user=id) | Q(second_user=id)).all()
 
 
 class Chat(models.Model):
-    creator = models.ForeignKey(User, models.CASCADE)
+    creator = models.ForeignKey('user.User', models.CASCADE)
     chat_label = models.CharField(max_length=128, null=True)
     icon = models.CharField(max_length=100, null=True)
 
@@ -38,6 +37,6 @@ class Chat(models.Model):
 
 
 class Member(models.Model):
-    user = models.ForeignKey(User, models.CASCADE)
-    chat = models.ForeignKey(Chat, models.CASCADE)
+    user = models.ForeignKey('user.User', models.CASCADE)
+    chat = models.ForeignKey('chat.Chat', models.CASCADE)
     last_unseen = models.IntegerField(null=True)
