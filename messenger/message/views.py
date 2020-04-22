@@ -3,6 +3,9 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.viewsets import ModelViewSet
 
 from message.serializers import MessageSerializer
@@ -12,6 +15,10 @@ from message.models import Message
 class MessageViewSet(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     lookupfield = 'id'
     lookup_url_kwarg = 'id'
 

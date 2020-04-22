@@ -4,6 +4,9 @@ from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
@@ -15,6 +18,10 @@ from user.models import User
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     lookupfield = 'id'
     lookup_url_kwarg = 'id'
 
