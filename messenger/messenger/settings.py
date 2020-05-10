@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'hs8=b3thbtnnyirggn$_i2kl$fiplp^ng$0(^_@q5bd32mw%dm'
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LcA6-8UAAAAAFxDlEeq_lVv5D4tNRXVVJIeUhHF'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,6 +31,9 @@ ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+LOGIN_URL='/lp-login/'
+LOGIN_REDIRECT_URL='/lp-login/'
+
 AUTH_USER_MODEL = 'user.User'
 
 REST_FRAMEWORK = {
@@ -38,6 +42,12 @@ REST_FRAMEWORK = {
     ]
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 # Application definition
 
@@ -99,9 +109,11 @@ DATABASES = {
         'PASSWORD': '5971',
         'HOST': '127.0.0.1',
         'PORT': '5432',
-    }
+        'TEST': {
+            'NAME': 'test_chat_db',
+        },
+    },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

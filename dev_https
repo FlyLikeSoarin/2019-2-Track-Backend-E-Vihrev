@@ -1,0 +1,7 @@
+foreground=yes
+cert=/usr/local/etc/stunnel/stunnel.pem
+
+[https]
+accept=8002
+connect=8003
+

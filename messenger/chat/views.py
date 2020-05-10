@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
+from django.views.decorators.cache import cache_page
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -28,6 +29,7 @@ class ChatViewSet(ModelViewSet):
     lookupfield = 'id'
     lookup_url_kwarg = 'id'
 
+    @cache_page(60)
     @action(detail=True, methods=['get'])
     def list_messages(self, request, id=None):
         chat = get_object_or_404(self.queryset, id=id)
@@ -38,6 +40,7 @@ class ChatViewSet(ModelViewSet):
             {'messages': serializer.data},
             status=status.HTTP_200_OK)
 
+    @cache_page(60)
     @action(detail=True, methods=['post'])
     def send_message(self, request, id=None):
         chat = get_object_or_404(self.queryset, id=id)
@@ -49,7 +52,7 @@ class ChatViewSet(ModelViewSet):
                 text=request.data['text'],
             )
             message.save()
-            
+
             serializer = MessageSerializer(message)
             return Response({'message': serializer.data}, status=status.HTTP_200_OK)
         except KeyError:
@@ -63,9 +66,11 @@ def get_chat_data(request):
     else:
         return HttpResponseNotAllowed()
 
+
+@cache_page(60)
 def list_chats(request):
     if request.method == 'GET':
-        chat_data = Chat.get_chats(my_id)
+        chat_data = Chat.objects.all()
         formated_chats = [{
                 'chat_id': entry.id,
                 'displayName': entry.chat_label,

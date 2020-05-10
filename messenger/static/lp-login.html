@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} Sign in {% endblock %}
+{% block content %}
+<div class="row">
+    <div class="row">
+        <div class="col-md-8 mx-auto social-container my-2 order-md-1">
+            <form class="form-group" action="/lp-login/" method="post">{% csrf_token %}
+              <div class="m-1">
+                Username <input class="form-control" type="text" name="username" />
+              </div> <div class="m-1">
+                Password <input class="form-control" type="password" name="password" />
+              </div> <div class="m-2">
+                <div class="g-recaptcha d-flex justify-content-center" data-sitekey="6LcA6-8UAAAAAIKxVA8nruF0BnATKU_1Q6soB_X1"></div>
+              </div> <div class="m-1">
+                <input class="bnt btn-info btn-block" size="40" type="submit" value="Submit" />
+              </div>
+            </form>
+        </div>
+    </div>
+    </div>
+{% endblock %}
