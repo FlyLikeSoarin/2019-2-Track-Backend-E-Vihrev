@@ -103,15 +103,8 @@ WSGI_APPLICATION = 'messenger.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'chat_db',
-        'USER': 'chat_db_admin',
-        'PASSWORD': '5971',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-        'TEST': {
-            'NAME': 'test_chat_db',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     },
 }
 
