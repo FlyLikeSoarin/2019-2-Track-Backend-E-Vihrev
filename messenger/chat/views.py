@@ -15,7 +15,7 @@ from rest_framework import status
 from chat.serializers import ChatSerializer, MemberSerializer
 from message.serializers import MessageSerializer
 from message.models import Message
-from chat.models import Chat
+from chat.models import Chat, Member
 from user.models import User
 
 
@@ -29,7 +29,56 @@ class ChatViewSet(ModelViewSet):
     lookupfield = 'id'
     lookup_url_kwarg = 'id'
 
-    @cache_page(60)
+    @action(detail=False, methods=['get'])
+    def list_chats(self, request):
+        chats = Member.objects.all().filter(user=request.user).values('chat').distinct()
+        chats_id = [entry['chat'] for entry in chats]
+
+        serializer = ChatSerializer(
+            self.queryset.filter(id__in=chats_id),
+            many=True)
+
+        data = {entry['id']: entry for entry in serializer.data}
+
+        return Response(
+            {'chats': data},
+            status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def create_chat(self, request):
+        user=request.user
+        try:
+            chat = Chat(
+                creator=request.user,
+                chat_label=request.data['chat_label'],)
+            chat.save()
+
+            member = Member(
+                chat=chat,
+                user=request.user,
+            )
+            member.save()
+
+            serializer = ChatSerializer(chat)
+            return Response({'chats': {serializer.data['id']: serializer.data}}, status=status.HTTP_200_OK)
+        except KeyError:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def join_chat(self, request, id=None):
+        chat = get_object_or_404(self.queryset, id=id)
+
+        if not Member.objects.all().filter(chat=chat, user=request.user).exists():
+            member = Member(
+                chat=chat,
+                user=request.user,
+            )
+            member.save()
+        
+        serializer = ChatSerializer(chat)
+        return Response({'chats': {serializer.data['id']: serializer.data}}, status=status.HTTP_200_OK)
+
+
     @action(detail=True, methods=['get'])
     def list_messages(self, request, id=None):
         chat = get_object_or_404(self.queryset, id=id)
@@ -37,14 +86,13 @@ class ChatViewSet(ModelViewSet):
             Message.objects.filter(chat=chat),
             many=True)
         return Response(
-            {'messages': serializer.data},
+            {'chatMessages': {chat.id: serializer.data}},
             status=status.HTTP_200_OK)
 
-    @cache_page(60)
     @action(detail=True, methods=['post'])
     def send_message(self, request, id=None):
         chat = get_object_or_404(self.queryset, id=id)
-        user = get_object_or_404(User.objects.all(), username=request.user)
+        user = get_object_or_404(Member.objects.all().filter(chat=chat), user=request.user)
         try:
             message = Message(
                 user=request.user,

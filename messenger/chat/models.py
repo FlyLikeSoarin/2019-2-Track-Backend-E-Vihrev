@@ -39,4 +39,4 @@ class Chat(models.Model):
 class Member(models.Model):
     user = models.ForeignKey('user.User', models.CASCADE)
     chat = models.ForeignKey('chat.Chat', models.CASCADE)
-    last_unseen = models.IntegerField(null=True)
+    last_unseen = models.IntegerField(default=-1)

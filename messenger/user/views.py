@@ -6,9 +6,11 @@ from django.contrib.auth.decorators import login_required
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 from rest_framework import status
 
 from user.serializers import UserSerializer
@@ -25,24 +27,35 @@ class UserViewSet(ModelViewSet):
     lookupfield = 'id'
     lookup_url_kwarg = 'id'
 
-    # def list(self, request):
-    #     pass
+    @action(detail=False, methods=['post'])
+    def create_user(self, request):
+        try:
+            username = request.data['username']
+            password = request.data['password']
+            if not self.queryset.filter(username=username, password=password).exists():
+                user = UserSerializer.create(validated_data={'username': username, 'password': password})
+                serializer = UserSerializer(user)
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_200_OK)
+            return Response({}, status=status.HTTP_409_CONFLICT)
+        except KeyError:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
-    # def get(self, request):
-    #     if request.method == 'GET':
-    #         id, username = request.GET.get('id'), request.GET.get('username')
-    #         user = None
-    #         user = User.get_by_id(id) if id else user
-    #         user = User.get_by_username(username) if username else user
-    #         if user is None:
-    #             return Response({}, status=status.HTTP_400_BAD_REQUEST)
-    #         else:
-    #             serializer = UserSerializer(user)
-    #             return Response(serializer.data, status=status.HTTP_200_OK)
-    #     return Response({}, status=status.HTTP_403_FORBIDDEN)
-    #
-    # def current(self, request):
-    #     pass
+    @action(detail=False, methods=['get'])
+    def my_profile(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK)
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            self.permission_classes = [AllowAny, ]
+        else:
+            self.permission_classes = [IsAuthenticated, ]
+
+        return super(UserViewSet, self).get_permissions()
 
 
 @login_required
