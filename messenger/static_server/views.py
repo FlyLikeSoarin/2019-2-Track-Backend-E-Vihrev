@@ -12,6 +12,13 @@ from user.models import User
 import requests
 
 
+def proof(request):
+    if request.method == "GET":
+        return render(request, '11C88FED60032AE0E360C99C0259128C.txt')
+    else:
+        return HttpResponseNotAllowed()
+
+
 def index(request):
     if request.method == "GET":
         return render(request, 'index.html')
