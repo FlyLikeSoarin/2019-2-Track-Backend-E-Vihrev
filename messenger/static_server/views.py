@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.http import FileResponse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseNotAllowed
@@ -14,7 +15,7 @@ import requests
 
 def proof(request):
     if request.method == "GET":
-        return render(request, '11C88FED60032AE0E360C99C0259128C.txt')
+        return FileResponse(open('11C88FED60032AE0E360C99C0259128C.txt', 'rb'))
     else:
         return HttpResponseNotAllowed()
 
