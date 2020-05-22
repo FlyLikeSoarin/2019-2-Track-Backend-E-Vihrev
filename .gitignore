@@ -1,0 +1,20 @@
+# -- Ignored files -- #
+
+# Virtual environment
+TrackMessengerDjangoEnv
+
+# Temporary files
+*.pyc
+*.swo
+*.swp
+
+# Nginx files
+nginx-info/
+
+# Static public files
+public
+
+# Database
+database
+.db-backup
+.db-pid
